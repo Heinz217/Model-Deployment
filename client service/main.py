@@ -28,20 +28,20 @@ def process_message(message: Message):
     }
     message_queue.put(message_now)
 
-@app.post("/ask/")
+@app.post('/ask/{id}')
 async def send_message(message: Message, background_tasks: BackgroundTasks):
     print(message)
     # 当用户发送消息时，将其添加到后台任务中处理
     background_tasks.add_task(process_message, message)
     return {"chat_system": "Message received."}
 
-@app.get("/answer/")
-async def process_queue():
+@app.get('/answer/{id}')
+async def process_queue(id: int=Queue()):
     if not message_queue.empty():
         message = message_queue.get()
         text = message.text
         return {
-        "id": message.id,
+        # "id": message.id,
         "text": text
     }
     else:
